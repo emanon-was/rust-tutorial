@@ -3,10 +3,6 @@ extern crate image;
 use self::image::{GenericImage, ImageBuffer};
 use texture::Texture;
 
-pub struct Canvas {
-    size: CanvasSize,
-}
-
 #[allow(dead_code)]
 pub enum CanvasSize {
     W1024, // 1024 x 1311
@@ -22,6 +18,10 @@ impl CanvasSize {
     }
 }
 
+pub struct Canvas {
+    size: CanvasSize,
+}
+
 #[allow(dead_code)]
 impl Canvas {
     pub fn w1024() -> Canvas {
@@ -35,9 +35,12 @@ impl Canvas {
 }
 
 impl Canvas {
+    pub fn dimensions(&self) -> (u32, u32) {
+        self.size.dimensions()
+    }
     #[allow(unused_parens)]
     pub fn write(&self, path: &str, textures: Vec<Texture>) -> () {
-        let (max_x, max_y) = self.size.dimensions();
+        let (max_x, max_y) = self.dimensions();
         let mut img = ImageBuffer::new(max_x, max_y);
         for t in &textures {
             let (offset_x, offset_y) = t.offset();
@@ -64,7 +67,7 @@ mod tests {
     #[test]
     fn dimensions() {
         let s = Canvas::w1024();
-        let (x, y) = s.size.dimensions();
+        let (x, y) = s.dimensions();
         assert!(x == 1024);
         assert!(y == 1311);
     }
@@ -75,12 +78,12 @@ mod tests {
         s.write(
             "test.jpg",
             vec![
-                Texture::default(0, 0, "testdata/texture-99-1-0-0.jpg"),
-                Texture::default(0, 1, "testdata/texture-99-1-0-1.jpg"),
-                Texture::default(0, 2, "testdata/texture-99-1-0-2.jpg"),
-                Texture::default(1, 0, "testdata/texture-99-1-1-0.jpg"),
-                Texture::default(1, 1, "testdata/texture-99-1-1-1.jpg"),
-                Texture::default(1, 2, "testdata/texture-99-1-1-2.jpg"),
+                Texture::w512(0, 0, "testdata/texture-99-1-0-0.jpg"),
+                Texture::w512(0, 1, "testdata/texture-99-1-0-1.jpg"),
+                Texture::w512(0, 2, "testdata/texture-99-1-0-2.jpg"),
+                Texture::w512(1, 0, "testdata/texture-99-1-1-0.jpg"),
+                Texture::w512(1, 1, "testdata/texture-99-1-1-1.jpg"),
+                Texture::w512(1, 2, "testdata/texture-99-1-1-2.jpg"),
             ],
         );
     }

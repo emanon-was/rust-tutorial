@@ -1,4 +1,17 @@
 #[derive(Debug)]
+pub enum TextureSize {
+    W512, // 512 x 512
+}
+
+impl TextureSize {
+    pub fn dimensions(&self) -> (u32, u32) {
+        match self {
+            TextureSize::W512 => (512, 512),
+        }
+    }
+}
+
+#[derive(Debug)]
 pub struct Texture {
     pub size: TextureSize,
     pub x: u32,
@@ -6,15 +19,10 @@ pub struct Texture {
     pub path: String,
 }
 
-#[derive(Debug)]
-pub enum TextureSize {
-    Default, // 512 x 512
-}
-
 impl Texture {
-    pub fn default(x: u32, y: u32, path: &str) -> Texture {
+    pub fn w512(x: u32, y: u32, path: &str) -> Texture {
         Texture {
-            size: TextureSize::Default,
+            size: TextureSize::W512,
             x: x,
             y: y,
             path: path.to_owned(),
@@ -24,9 +32,7 @@ impl Texture {
 
 impl Texture {
     pub fn dimensions(&self) -> (u32, u32) {
-        match self.size {
-            TextureSize::Default => (512, 512),
-        }
+        self.size.dimensions()
     }
     pub fn offset(&self) -> (u32, u32) {
         let (width, height) = self.dimensions();
@@ -40,7 +46,7 @@ mod tests {
 
     #[test]
     fn offset() {
-        let t = Texture::default(2, 3, "test.png");
+        let t = Texture::w512(2, 3, "test.png");
         let (x, y) = t.offset();
         assert!(x == 1024);
         assert!(y == 1536);
